@@ -1,20 +1,29 @@
 package catboost
 
 /*
-#cgo linux LDFLAGS: -lcatboostmodel
-#cgo darwin LDFLAGS: -lcatboostmodel
+#cgo linux CFLAGS: -Iheaders
+#cgo darwin CFLAGS: -Iheaders
+
+#cgo linux LDFLAGS: -L. -lcatboostmodel
+#cgo darwin LDFLAGS: -L. -lcatboostmodel
+
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include <model_calcer_wrapper.h>
-static char** makeCharArray(int size) {
+
+static char** makeCharArray(int size)
+{
         return calloc(sizeof(char*), size);
 }
 
-static void setArrayString(char **a, char *s, int n) {
+static void setArrayString(char **a, char *s, int n)
+{
         a[n] = s;
 }
 
-static void freeCharArray(char **a, int size) {
+static void freeCharArray(char **a, int size)
+{
         int i;
         for (i = 0; i < size; i++)
                 free(a[i]);
@@ -79,7 +88,9 @@ func (model *Model) CalcModelPrediction(floats [][]float32, floatLength int, cat
 
 	floatsC := make([]*C.float, nSamples)
 	for i, v := range floats {
-		floatsC[i] = (*C.float)(&v[0])
+		floatsC[i] = (*C.float)(C.calloc(C.sizeof_float, C.size_t(len(v))))
+		C.memcpy(unsafe.Pointer(floatsC[i]), unsafe.Pointer(&v[0]), C.size_t(len(v)) * C.sizeof_float)
+		defer C.free(unsafe.Pointer(floatsC[i]))
 	}
 
 	catsC := make([]**C.char, nSamples)
