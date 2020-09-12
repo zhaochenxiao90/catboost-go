@@ -14,5 +14,5 @@ export LD_LIBRARY_PATH=$CATBOOST_DIR:$LD_LIBRARY_PATH
 The other way is to put compiled library files and include files to default search diretories (`/usr/local/lib`, `/usr/local/include`).
 If everything above is properly configured then a simple `go get` command will do the trick:
 ```
-go get -u github.com/ma3axaka/catboost-go
+go get -u github.com/tikivn/catboost-go
 ```
