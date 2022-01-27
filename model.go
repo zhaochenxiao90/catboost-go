@@ -51,7 +51,7 @@ func makeCStringArrayPointer(array []string) **C.char {
 	return cargs
 }
 
-// Model is a wrapper over ModelCalcerHandler
+// Model is a wrapper over ModelCalcerHandler in c_api.h
 type Model struct {
 	Handler unsafe.Pointer
 }
@@ -85,11 +85,10 @@ func LoadFullModelFromFile(filename string) (*Model, error) {
 func (model *Model) CalcModelPrediction(floats [][]float32, floatLength int, cats [][]string, catLength int) ([]float64, error) {
 	nSamples := len(floats)
 	results := make([]float64, nSamples)
-
 	floatsC := make([]*C.float, nSamples)
 	for i, v := range floats {
 		floatsC[i] = (*C.float)(C.calloc(C.sizeof_float, C.size_t(len(v))))
-		C.memcpy(unsafe.Pointer(floatsC[i]), unsafe.Pointer(&v[0]), C.size_t(len(v)) * C.sizeof_float)
+		C.memcpy(unsafe.Pointer(floatsC[i]), unsafe.Pointer(&v[0]), C.size_t(len(v))*C.sizeof_float)
 		defer C.free(unsafe.Pointer(floatsC[i]))
 	}
 

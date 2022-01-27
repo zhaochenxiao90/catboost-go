@@ -2,8 +2,8 @@ package catboost
 
 import "math"
 
-// BinaryClassifer is wrapper over model object that add methods for binary classification
-type BinaryClassifer struct {
+// BinaryClassifier is wrapper over model object that add methods for binary classification
+type BinaryClassifier struct {
 	Model *Model
 }
 
@@ -12,16 +12,16 @@ func sigmoid(probit float64) float64 {
 }
 
 // LoadBinaryClassifierFromFile loads binary classifier from file
-func LoadBinaryClassifierFromFile(filename string) (*BinaryClassifer, error) {
+func LoadBinaryClassifierFromFile(filename string) (*BinaryClassifier, error) {
 	model, err := LoadFullModelFromFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return &BinaryClassifer{Model: model}, nil
+	return &BinaryClassifier{Model: model}, nil
 }
 
 // PredictProba returns sigmoid scores which could be interpreted like probability
-func (bc *BinaryClassifer) PredictProba(floats [][]float32, floatLength int, cats [][]string, catLength int) ([]float64, error) {
+func (bc *BinaryClassifier) PredictProba(floats [][]float32, floatLength int, cats [][]string, catLength int) ([]float64, error) {
 	results, err := bc.Model.CalcModelPrediction(floats, floatLength, cats, catLength)
 	if err != nil {
 		return nil, err
@@ -33,6 +33,6 @@ func (bc *BinaryClassifer) PredictProba(floats [][]float32, floatLength int, cat
 }
 
 // Close deletes model handler
-func (bc *BinaryClassifer) Close() {
+func (bc *BinaryClassifier) Close() {
 	bc.Model.Close()
 }
