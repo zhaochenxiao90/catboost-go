@@ -1,6 +1,6 @@
 package catboost
 
-// Regression is wrapper over model object that add methods for catboost regression
+// Regression is a wrapper over model object that adds methods for catboost regression
 type Regression struct {
 	Model *Model
 }
@@ -13,8 +13,18 @@ func LoadRegressionFromFile(filename string) (*Regression, error) {
 	return &Regression{Model: model}, nil
 }
 
-func (r *Regression) PredictRegression(floats [][]float32, floatLength int, cats [][]string, catLength int) ([]float64, error) {
-	results, err := r.Model.CalcModelPrediction(floats, floatLength, cats, catLength)
+func (r *Regression) PredictRegression(
+	floats [][]float32, floatLength int,
+	cats [][]string, catLength int,
+	texts [][]string, textLength int,
+	embeddings [][][]float32, embeddingDimensions []int, embeddingSize int,
+) ([]float64, error) {
+	results, err := r.Model.CalcModelPredictionTextAndEmbeddings(
+		floats, floatLength,
+		cats, catLength,
+		texts, textLength,
+		embeddings, embeddingDimensions, embeddingSize,
+	)
 	if err != nil {
 		return nil, err
 	}

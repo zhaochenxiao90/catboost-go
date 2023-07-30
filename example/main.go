@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"catboost-go"
+	"github.com/tikivn/catboost-go"
 )
 
 func main() {

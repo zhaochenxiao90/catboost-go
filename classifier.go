@@ -21,8 +21,17 @@ func LoadBinaryClassifierFromFile(filename string) (*BinaryClassifier, error) {
 }
 
 // PredictProba returns sigmoid scores which could be interpreted like probability
-func (bc *BinaryClassifier) PredictProba(floats [][]float32, floatLength int, cats [][]string, catLength int) ([]float64, error) {
-	results, err := bc.Model.CalcModelPrediction(floats, floatLength, cats, catLength)
+func (bc *BinaryClassifier) PredictProba(floats [][]float32, floatLength int,
+	cats [][]string, catLength int,
+	text [][]string, textLength int,
+	embeddings [][][]float32, embeddingDimensions []int, embeddingSize int,
+) ([]float64, error) {
+	results, err := bc.Model.CalcModelPredictionTextAndEmbeddings(
+		floats, floatLength,
+		cats, catLength,
+		text, textLength,
+		embeddings, embeddingDimensions, embeddingSize,
+	)
 	if err != nil {
 		return nil, err
 	}

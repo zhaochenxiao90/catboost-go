@@ -1,7 +1,6 @@
 package catboost
 
 import (
-	"gotest.tools/assert"
 	"math"
 	"testing"
 )
@@ -9,24 +8,19 @@ import (
 func TestLoadRegressionFromFile(t *testing.T) {
 	// see regression.py to know how we get this model
 	model, err := LoadRegressionFromFile("regression.bin")
-	assert.NilError(t, err)
-	// this input are the same with inputs in regression.py
+	assertNilError(t, err)
+	// this input are the same with inputs in train.py
 	t.Run("with eval_data from python script", func(t *testing.T) {
 		regression, err := model.PredictRegression(
-			[][]float32{{2, 4, 6, 8}, {1, 4, 50, 60}}, 4,
-			[][]string{{"a"}, {"b"}}, 2,
+			[][]float32{{1}, {2}, {2}}, 1,
+			[][]string{{"female"}, {"female"}, {"male"}}, 1,
+			nil, 0,
+			[][][]float32{{{0.2, 0.1, 0.3}, {1.2, 0.3}}, {{0.33, 0.22, 0.4}, {0.98, 0.5}}, {{0.78, 0.29, 0.67}, {0.76, 0.34}}}, []int{3, 2}, 2,
 		)
-		assert.NilError(t, err)
+		assertNilError(t, err)
 		t.Log(regression)
-		assert.Assert(t, math.Abs(regression[0]-15.65772339) < 0.00001)
-		assert.Assert(t, math.Abs(regression[1]-20.38869995) < 0.00001)
-	})
-	t.Run("random data", func(t *testing.T) {
-		regression, err := model.PredictRegression(
-			[][]float32{{1, 2, 3, 4}, {5, 6, 7, 8}}, 4,
-			[][]string{{"a"}, {"b"}}, 2,
-		)
-		assert.NilError(t, err)
-		t.Log(regression)
+		assertTrue(t, math.Abs(regression[0]-0.46018641) < 0.00001)
+		assertTrue(t, math.Abs(regression[1]-0.47496323) < 0.00001)
+		assertTrue(t, math.Abs(regression[2]-0.65977057) < 0.00001)
 	})
 }
