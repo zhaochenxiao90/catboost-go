@@ -124,13 +124,30 @@ func (model *Model) CalcModelPredictionTextAndEmbeddings(
 	texts [][]string, textLength int,
 	embeddings [][][]float32, embeddingDimensions []int, embeddingFeaturesSize int,
 ) ([]float64, error) {
-	nSamples := len(floats)
+	var nSamples int
+	if l := len(floats); l > 0 {
+		nSamples = l
+	} else if l := len(cats); l > 0 {
+		nSamples = l
+	} else if l := len(texts); l > 0 {
+		nSamples = l
+	} else if l := len(embeddings); l > 0 {
+		nSamples = l
+	} else {
+		// no sample
+		return nil, nil
+	}
 	results := make([]float64, nSamples)
 	floatsC := make([]*C.float, nSamples)
 	for i, v := range floats {
-		floatsC[i] = (*C.float)(C.calloc(C.sizeof_float, C.size_t(len(v))))
-		C.memcpy(unsafe.Pointer(floatsC[i]), unsafe.Pointer(&v[0]), C.size_t(len(v))*C.sizeof_float)
-		defer C.free(unsafe.Pointer(floatsC[i]))
+		if len(v) != floatLength {
+			return nil, fmt.Errorf("float feature length is not equal to floatLength")
+		}
+		if len(v) > 0 {
+			floatsC[i] = (*C.float)(C.calloc(C.sizeof_float, C.size_t(len(v))))
+			C.memcpy(unsafe.Pointer(floatsC[i]), unsafe.Pointer(&v[0]), C.size_t(len(v))*C.sizeof_float)
+			defer C.free(unsafe.Pointer(floatsC[i]))
+		}
 	}
 
 	catsC := make([]**C.char, nSamples)
