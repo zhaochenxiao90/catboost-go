@@ -16,5 +16,5 @@ sudo download-catboost.sh
 If everything above is properly configured then a simple `go get` command will do the trick:
 
 ```bash
-go get -u github.com/tikivn/catboost-go
+go get -u github.com/zhaochenxiao90/catboost-go
 ```
