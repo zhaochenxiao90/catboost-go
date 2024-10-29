@@ -1,3 +1,3 @@
-module github.com/tikivn/catboost-go
+module github.com/zhaochenxiao90/catboost-go
 
 go 1.20
